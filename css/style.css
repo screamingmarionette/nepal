@@ -691,7 +691,12 @@ a {
   }
 
   .menu-toggle {
-    font-size: 1.9rem;
+    display: block;
+    position: relative;
+    z-index: 102;
+    font-size: 2.2rem;
+    flex: 0 0 auto;
+    line-height: 1;
   }
 }  
 
@@ -770,7 +775,13 @@ a {
   .mobile-open .socials a {
     font-size: 2rem;
   }
-
+  .mobile-open .menu-toggle {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    left: auto;
+    z-index: 103;
+  }
   .hero-inner {
     padding: 110px 18px 54px;
   }
@@ -818,5 +829,22 @@ a {
 
   .coming-soon-card {
     padding: 22px;
+  }
+}
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 500px) {
+  .mobile-open .menu-toggle {
+    top: 12px;
+    right: 16px;
+    font-size: 1.9rem;
+  }
+
+  .mobile-open .nav {
+    padding: 70px 32px 32px;
+    gap: 14px;
+  }
+
+  .mobile-open .nav a {
+    font-size: 1.25rem;
+    padding-bottom: 4px;
   }
 }
