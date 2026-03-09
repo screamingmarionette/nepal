@@ -610,6 +610,14 @@ a {
 /* RESPONSIVE */
 
 @media (max-width: 760px) {
+  .contact-wrapper {
+    grid-template-columns: 1fr;
+  }
+  
+  .booking-card {
+    justify-content: flex-start;
+  }
+
   .hero-bg {
     position: absolute;
   }
