@@ -2,14 +2,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* MOBILE MENU */
 
-  var menuToggle = document.getElementById("menuToggle");
-  var topbar = document.getElementById("topbar");
+var menuToggle = document.getElementById("menuToggle");
+var topbar = document.getElementById("topbar");
 
-  if (menuToggle && topbar) {
-    menuToggle.addEventListener("click", function () {
-      topbar.classList.toggle("mobile-open");
-    });
-  }
+if (menuToggle && topbar) {
+  menuToggle.addEventListener("click", function () {
+    topbar.classList.toggle("mobile-open");
+    document.body.classList.toggle("menu-open");
+  });
+}
 
 
   /* WATCH BUTTON */
