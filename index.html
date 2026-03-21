@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Screaming Marionette</title>
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+
+<body>
+
+
+    <section class="hero">
+        <div class="hero-bg hero-bg1"></div>
+        <div class="hero-bg hero-bg2"></div>
+
+
+        <header class="topbar" id="topbar">
+            <div class="nav-wrap">
+                <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+
+                <nav>
+                    <ul class="nav" id="navList">
+                        <li><a href="index.html" class="active">Home</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="#music">Music</a></li>
+                        <li><a href="tour.html">Tour</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+
+            <div class="socials" id="socials">
+                <a href="https://www.facebook.com/screamingmarionette1" target="_blank" rel="noopener noreferrer"
+                    aria-label="Facebook">
+                    <i class="fa-brands fa-facebook-f"></i>
+                </a>
+                <a href="https://instagram.com/screamingmarionette" target="_blank" rel="noopener noreferrer"
+                    aria-label="Instagram">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+                <a href="https://www.tiktok.com/@screaming.marionette" target="_blank" rel="noopener noreferrer"
+                    aria-label="TikTok">
+                    <i class="fa-brands fa-tiktok"></i>
+                </a>
+            </div>
+        </header>
+
+
+        <div class="hero-inner">
+            <div class="content">
+                <div class="band-logo">
+
+
+                    <a href="gallery.html" class="logo-link">
+                        <img src="images/sm-logo2.png" alt="Screaming Marionette Logo">
+                    </a>
+                </div>
+                <div class="anniversary-surprise">
+                    <p>Click the logo for surprise!<br>Happy 10th Anniversary to us!</p>
+                </div>
+
+
+                <div class="hero-columns">
+                    <div class="gigs-card">
+                        <h2 class="gigs-title">Upcoming Gigs</h2>
+                        <ul class="gigs-list">
+                            <li>
+                                <a href="https://tickets.oztix.com.au/outlet/event/7fbd0b87-22a6-4472-8022-6bc49cc40609"
+                                    class="gig-item" target="_blank" rel="noopener noreferrer">
+                                    <div class="gig-date">
+                                        <span class="gig-day">22</span>
+                                        <span class="gig-month">MAY</span>
+                                    </div>
+                                    <div class="gig-info">
+                                        <span class="gig-venue">Echoes Of Everest Vol. II</span>
+                                        <span class="gig-city">The Chippo Hotel, Sydney</span>
+                                    </div>
+                                    <span class="gig-tickets">TICKETS</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.eventbrite.com.au/e/nowhere-festival-2026-tickets-1983590433383?aff=erelexpmlt"
+                                    class="gig-item" target="_blank" rel="noopener noreferrer">
+                                    <div class="gig-date">
+                                        <span class="gig-day">14</span>
+                                        <span class="gig-month">JUNE</span>
+                                    </div>
+                                    <div class="gig-info">
+                                        <span class="gig-venue">Nowhere Festival</span>
+                                        <span class="gig-city">Arichive Beer Boutique West End, Brisbane</span>
+                                    </div>
+                                    <span class="gig-tickets">TICKETS</span>
+                                </a>
+                            </li>
+                            <!-- <li>
+                                <a href="#" class="gig-item" target="_blank" rel="noopener noreferrer">
+                                    <div class="gig-date">
+                                        <span class="gig-day">28</span>
+                                        <span class="gig-month">JUN</span>
+                                    </div>
+                                    <div class="gig-info">
+                                        <span class="gig-venue">Metal Fest Open Air</span>
+                                        <span class="gig-city">Pokhara, Nepal</span>
+                                    </div>
+                                    <span class="gig-tickets">TICKETS</span>
+                                </a>
+                            </li> -->
+                        </ul>
+                        <a href="tour.html" class="gigs-see-all">See More &rarr;</a>
+                    </div>
+
+
+                    <div class="hero-cta">
+                        <div class="vault-card">
+                            <h2 class="vault-title">Now Playing</h2>
+                            <div class="vault-video">
+                                <iframe src="https://www.youtube.com/embed/b29Cg2P0KI4?si=3XbRs6Deo9jwzAQS"
+                                    title="YouTube video player" frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+                                </iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- MOBILE MENU OVERLAY — outside .hero so isolation:isolate cannot trap it -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+        <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Close menu">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <ul class="mobile-nav">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="#music">Music</a></li>
+            <li><a href="tour.html">Tour</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </div>
+
+
+
+    <div class="pre-footer-platforms" id="music">
+        <div class="platforms">
+            <a class="platform-btn youtube" href="https://www.youtube.com/c/ScreamingMarionette" target="_blank"
+                rel="noopener noreferrer" aria-label="YouTube">
+                <i class="fa-brands fa-youtube"></i>
+            </a>
+            <a class="platform-btn spotify" href="https://open.spotify.com/artist/2u5Vk0s82YlqzHYQRRxYq5"
+                target="_blank" rel="noopener noreferrer" aria-label="Spotify">
+                <i class="fa-brands fa-spotify"></i>
+            </a>
+            <a class="platform-btn applemusic" href="https://music.apple.com/np/artist/screaming-marionette/1489588929"
+                target="_blank" rel="noopener noreferrer" aria-label="Apple Music">
+                <i class="fa-brands fa-apple"></i>
+            </a>
+            <a class="platform-btn deezer"
+                href="https://www.deezer.com/en/artist/184464037?utm_campaign=clipboard-generic&utm_source=user_sharing&utm_medium=desktop&utm_content=artist-184464037&deferredFl=1"
+                target="_blank" rel="noopener noreferrer" aria-label="Deezer">
+                <i class="fa-brands fa-deezer"></i>
+            </a>
+        </div>
+    </div>
+
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <span class="footer-logo">Screaming Marionette</span>
+            <p class="footer-contact">For bookings &amp; inquiries:
+                <a href="mailto:screamingmarionette2016@gmail.com">screamingmarionette2016@gmail.com</a>
+            </p>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Screaming Marionette. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+
+    <script src="js/script.js"></script>
+</body>
+
+
+</html>
