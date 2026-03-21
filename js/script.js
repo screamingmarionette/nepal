@@ -189,6 +189,22 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  /* ADDITIONAL CREW TOGGLE */
+  const crewToggleBtn = document.getElementById("crewToggleBtn");
+  const crewContainer = document.getElementById("crewContainer");
+
+  if (crewToggleBtn && crewContainer) {
+    crewToggleBtn.addEventListener("click", function () {
+      const isExpanded = crewContainer.classList.toggle("is-expanded");
+      crewToggleBtn.textContent = isExpanded ? "See Less" : "See More";
+
+      // Small scroll adjustment if collapsing
+      if (!isExpanded) {
+        crewContainer.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    });
+  }
+
 
   /* MEMBERS CAROUSEL OBSERVER */
   var carousels = document.querySelectorAll('.members-carousel');
