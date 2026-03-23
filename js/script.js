@@ -70,6 +70,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
   /* HERO IMAGES */
+  var scriptTag = document.querySelector('script[src*="js/script.js"]');
+  var pathPrefix = "";
+  if (scriptTag) {
+    var src = scriptTag.getAttribute('src');
+    var match = src.match(/^(\.\.\/)+/);
+    if (match) {
+      pathPrefix = match[0];
+    }
+  }
 
 
   var images = [
@@ -79,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function () {
     "images/hero4.webp",
     "images/hero5.webp",
     "images/hero6.webp"
-  ];
+  ].map(function (src) { return pathPrefix + src; });
 
 
 
