@@ -875,7 +875,7 @@
             // Show loading on start screen while preloading act1
             startBtn.textContent = 'Loading...';
             startBtn.disabled = true;
-            await preloadImages(act1Images);
+            await preloadImages([...act1Images, '../images/act4/_84A3898.webp']);
             startBtn.textContent = 'Play';
             startBtn.disabled = false;
 
