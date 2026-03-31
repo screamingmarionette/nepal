@@ -833,11 +833,16 @@
 
         filmContainer.addEventListener('touchend', (e) => {
             if (filmContainer.style.display !== 'block') return;
-            // ignore taps on buttons
             if (e.target.closest('button, a')) return;
             e.preventDefault();
             togglePause();
         }, { passive: false });
+
+        filmContainer.addEventListener('click', (e) => {
+            if (filmContainer.style.display !== 'block') return;
+            if (e.target.closest('button, a')) return;
+            togglePause();
+        });
 
         skipBtn.addEventListener('click', () => {
             skipped = true;
