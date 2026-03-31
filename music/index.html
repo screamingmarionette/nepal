@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>How Screaming Began — Screaming Marionette</title>
+    <title>TEN YEARS OF SCREAMING MATIONETTE</title>
     <link rel="icon" type="image/png" href="../sm-logo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -350,8 +350,8 @@
 
     <!-- Start Screen -->
     <div id="startScreen">
-        <h1>How Screaming Began</h1>
-        <p class="sub">A fan appreciation film</p>
+        <h1>TEN YEARS OF SCREAMING MATIONETTE</h1>
+        <p class="sub">A fan appreciation video</p>
         <button id="startBtn">Play</button>
     </div>
 
@@ -690,7 +690,7 @@
 
         async function act2() {
             await wait(1200);
-            showText('HOW IT BEGAN', 'text-zoom');
+            showText('THE BEGINNING', 'text-zoom');
             await wait(6500);
             clearAll();
             await wait(300);
@@ -706,7 +706,7 @@
             }
             clearAll();
             await wait(300);
-            showText('HOW IT\'S GOING', 'text-zoom');
+            showText('NOW', 'text-zoom');
             await wait(6500);
             clearAll();
             await wait(300);
@@ -854,10 +854,26 @@
             endScreen.style.display = 'flex';
         });
 
+        function preloadImages(images) {
+            return Promise.all(images.map(src => new Promise(resolve => {
+                const img = new Image();
+                img.onload = img.onerror = resolve;
+                img.src = src;
+            })));
+        }
+
         async function runFilm() {
             skipped = false;
             paused = false;
             endScreen.style.display = 'none';
+
+            // Show loading on start screen while preloading act1
+            startBtn.textContent = 'Loading...';
+            startBtn.disabled = true;
+            await preloadImages(act1Images);
+            startBtn.textContent = 'Play';
+            startBtn.disabled = false;
+
             startScreen.style.display = 'none';
             filmContainer.style.display = 'block';
             skipBtn.style.display = 'block';
