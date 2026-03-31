@@ -4,84 +4,896 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Screaming Marionette</title>
-
+    <title>How Screaming Began — Screaming Marionette</title>
+    <link rel="icon" type="image/png" href="../sm-logo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    <link rel="icon" type="image/png" href="../sm-logo.png" />
-    <link rel="stylesheet" href="../css/style.css" />
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: #000;
+            color: #fff;
+            font-family: 'Oswald', sans-serif;
+            overflow: hidden;
+        }
+
+        /* ── START SCREEN ── */
+        #startScreen {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            gap: 32px;
+        }
+
+        #startScreen h1 {
+            font-size: clamp(22px, 5vw, 54px);
+            letter-spacing: 0.25em;
+            color: #e8453f;
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        #startScreen .sub {
+            font-size: 11px;
+            letter-spacing: 0.3em;
+            color: #444;
+            text-transform: uppercase;
+        }
+
+        #startBtn {
+            background: transparent;
+            border: 1px solid #e8453f;
+            color: #e8453f;
+            font-family: 'Oswald', sans-serif;
+            font-size: 14px;
+            letter-spacing: 0.35em;
+            padding: 14px 52px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        #startBtn:hover {
+            background: #e8453f;
+            color: #000;
+        }
+
+        /* ── SKIP BUTTON ── */
+        #skipBtn {
+            position: fixed;
+            top: 20px;
+            right: 24px;
+            z-index: 500;
+            background: transparent;
+            border: none;
+            color: #333;
+            font-family: 'Oswald', sans-serif;
+            font-size: 11px;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: none;
+            padding: 6px;
+        }
+
+        #skipBtn:hover { color: #666; }
+
+        /* ── FILM CONTAINER ── */
+        #filmContainer {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            display: none;
+        }
+
+        /* Photo */
+        #photoDisplay {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: sepia(0.35) contrast(1.15) brightness(0.92) saturate(0.8);
+            display: none;
+        }
+
+        /* Text */
+        #textDisplay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 48px;
+            z-index: 15;
+        }
+
+        .text-zoom {
+            font-size: clamp(32px, 7vw, 90px);
+            color: #e8453f;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            font-weight: 700;
+            animation: zoomIn 8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .text-lift {
+            font-size: clamp(16px, 3vw, 36px);
+            color: #e8453f;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-weight: 500;
+            max-width: 680px;
+            line-height: 1.6;
+            animation: liftIn 2.2s ease forwards;
+        }
+
+        .text-card {
+            font-size: clamp(18px, 3.5vw, 48px);
+            color: #e8453f;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            font-weight: 600;
+            animation: fadeCard 4.5s ease forwards;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.25); opacity: 0; }
+            to   { transform: scale(1);    opacity: 1; }
+        }
+
+        @keyframes liftIn {
+            from { transform: translateY(48px); opacity: 0; }
+            to   { transform: translateY(0);    opacity: 1; }
+        }
+
+        @keyframes fadeCard {
+            0%   { opacity: 0; }
+            18%  { opacity: 1; }
+            72%  { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        /* Vignette */
+        #vignette {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, transparent 38%, rgba(0,0,0,0.78) 100%);
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        /* Grain */
+        #grainCanvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 30;
+            opacity: 0.08;
+            mix-blend-mode: overlay;
+            image-rendering: pixelated;
+        }
+
+        /* Scratch */
+        #scratch {
+            position: absolute;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.55) 20%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.4) 80%, transparent);
+            pointer-events: none;
+            z-index: 40;
+            display: none;
+        }
+
+        /* Flash */
+        #flash {
+            position: absolute;
+            inset: 0;
+            background: #fff;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        #flash.pop {
+            animation: flashPop 0.14s ease-out forwards;
+        }
+
+        @keyframes flashPop {
+            0%   { opacity: 0.92; }
+            100% { opacity: 0; }
+        }
+
+        /* End screen */
+        #endScreen {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            gap: 28px;
+        }
+
+        #endScreen a {
+            color: #e8453f;
+            font-family: 'Oswald', sans-serif;
+            font-size: 13px;
+            letter-spacing: 0.3em;
+            text-decoration: none;
+            text-transform: uppercase;
+            border-bottom: 1px solid #e8453f;
+            padding-bottom: 3px;
+        }
+
+        #endScreen a:hover { color: #fff; border-color: #fff; }
+
+        #playAgainBtn {
+            background: transparent;
+            border: 1px solid #e8453f;
+            color: #e8453f;
+            font-family: 'Oswald', sans-serif;
+            font-size: 14px;
+            letter-spacing: 0.35em;
+            padding: 14px 52px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        #playAgainBtn:hover {
+            background: #e8453f;
+            color: #000;
+        }
+
+        #pauseIndicator {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Oswald', sans-serif;
+            font-size: 13px;
+            letter-spacing: 0.4em;
+            color: rgba(255,255,255,0.4);
+            text-transform: uppercase;
+            pointer-events: none;
+            z-index: 200;
+            display: none;
+        }
+
+        #muteBtn {
+            position: fixed;
+            bottom: 20px;
+            right: 24px;
+            z-index: 500;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.25);
+            color: rgba(255,255,255,0.5);
+            font-family: 'Oswald', sans-serif;
+            font-size: 11px;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            cursor: pointer;
+            padding: 7px 14px;
+            display: none;
+        }
+
+        #muteBtn:hover { color: #fff; border-color: #fff; }
+
+        #backBtn {
+            position: fixed;
+            top: 20px;
+            left: 24px;
+            z-index: 500;
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.35);
+            font-family: 'Oswald', sans-serif;
+            font-size: 11px;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            cursor: pointer;
+            padding: 6px;
+            display: none;
+            text-decoration: none;
+        }
+
+        #backBtn:hover { color: #fff; }
+
+        /* ── TOUCH HINT ── */
+        #touchHint {
+            position: fixed;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Oswald', sans-serif;
+            font-size: 10px;
+            letter-spacing: 0.3em;
+            color: rgba(255,255,255,0.2);
+            text-transform: uppercase;
+            pointer-events: none;
+            z-index: 200;
+            display: none;
+        }
+
+        /* ── MOBILE ── */
+        @media (max-width: 768px) {
+            #startScreen h1 { font-size: clamp(20px, 7vw, 36px); padding: 0 24px; }
+            #startBtn { padding: 16px 40px; font-size: 13px; }
+            #skipBtn { top: 16px; right: 16px; font-size: 12px; padding: 10px; }
+            #muteBtn { bottom: 16px; right: 16px; padding: 12px 20px; font-size: 12px; }
+            #backBtn { top: 16px; left: 16px; font-size: 12px; padding: 10px; }
+            #pauseIndicator { font-size: 11px; }
+            .text-zoom { font-size: clamp(28px, 9vw, 60px); }
+            .text-lift { font-size: clamp(13px, 4vw, 24px); padding: 0 20px; }
+            .text-card { font-size: clamp(16px, 5vw, 32px); padding: 0 20px; }
+        }
+    </style>
 </head>
 
 <body>
 
-    <header class="topbar" id="topbar">
-        <div class="nav-wrap">
-            <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
-                <i class="fa-solid fa-bars"></i>
-            </button>
+    <!-- Start Screen -->
+    <div id="startScreen">
+        <h1>How Screaming Began</h1>
+        <p class="sub">A fan appreciation film</p>
+        <button id="startBtn">Play</button>
+    </div>
 
-            <nav>
-                <ul class="nav" id="navList">
-                    <li><a href="../">Home</a></li>
-                    <li><a href="../about/">About</a></li>
-                    <li><a href="./" class="active">Music</a></li>
-                    <li><a href="../tour/">Tour</a></li>
+    <!-- Film Experience -->
+    <div id="filmContainer">
+        <img id="photoDisplay" src="" alt="">
+        <div id="textDisplay"></div>
+        <div id="vignette"></div>
+        <canvas id="grainCanvas" width="256" height="256"></canvas>
+        <div id="scratch"></div>
+        <div id="flash"></div>
+    </div>
 
-                    <li><a href="../contact/">Contact</a></li>
-                </ul>
-            </nav>
-        </div>
+    <!-- Audio (placeholder — replace with your mp3) -->
+    <audio id="bgAudio" src="../audio/background.mp3" preload="auto"></audio>
 
-        <div class="socials" id="socials">
-            <a href="https://www.facebook.com/screamingmarionette1" target="_blank" rel="noopener noreferrer"
-                aria-label="Facebook">
-                <i class="fa-brands fa-facebook-f"></i>
-            </a>
-            <a href="https://instagram.com/screamingmarionette" target="_blank" rel="noopener noreferrer"
-                aria-label="Instagram">
-                <i class="fa-brands fa-instagram"></i>
-            </a>
-            <a href="https://www.tiktok.com/@screaming.marionette" target="_blank" rel="noopener noreferrer"
-                aria-label="TikTok">
-                <i class="fa-brands fa-tiktok"></i>
-            </a>
-        </div>
-    </header>
+    <!-- Skip button (visible during playback) -->
+    <button id="skipBtn">Skip ×</button>
+    <div id="pauseIndicator">Paused — Space to resume</div>
+    <button id="muteBtn">Mute</button>
+    <a id="backBtn" href="../">← Back</a>
+    <div id="touchHint">Tap to pause</div>
 
-    <section class="hero">
-        <div class="hero-bg hero-bg1"></div>
-        <div class="hero-bg hero-bg2"></div>
-        <div class="hero-inner coming-soon-hero-inner">
-            <div class="coming-soon-card">
-                <p class="coming-soon-kicker">Screaming Marionette</p>
-                <h1 class="coming-soon-title">Coming Soon</h1>
-                <p class="coming-soon-text">
-                    This page is under construction and will be available soon.
-                </p>
-            </div>
-        </div>
+    <!-- End Screen -->
+    <div id="endScreen">
+        <button id="playAgainBtn">Play Again</button>
+        <a href="../gallery/index.html">← Back</a>
+    </div>
 
-    </section>
+    <script>
+        // ── IMAGE ARRAYS ─────────────────────────────────────────────────────
+        // Act I: All band + fan photos, will play in reverse (latest → earliest)
+        const act1Images = [
+            '../images/act1/124896836310641.jpg',
+            '../images/act1/1741924276059556.jpg',
+            '../images/act1/1763297877255529.jpg',
+            '../images/act1/1816532431932073.jpg',
+            '../images/act1/1822580677993915.jpg',
+            '../images/act1/1823533371231979.jpg',
+            '../images/act1/1855098968075419.jpg',
+            '../images/act1/1861179700800679.jpg',
+            '../images/act1/1861853824066600.jpg',
+            '../images/act1/1879339462318036.jpg',
+            '../images/act1/1898857200366262.jpg',
+            '../images/act1/1911212395797409.jpg',
+            '../images/act1/1911441345774514.jpg',
+            '../images/act1/1911441442441171.jpg',
+            '../images/act1/1911441625774486.jpg',
+            '../images/act1/1913764865542162.jpg',
+            '../images/act1/1932617700323545.jpg',
+            '../images/act1/1945595445692437.jpg',
+            '../images/act1/1964911357094179.jpg',
+            '../images/act1/1964912787094036.jpg',
+            '../images/act1/1970750503176931.jpg',
+            '../images/act1/2003882329863748.jpg',
+            '../images/act1/2008794666039181.jpg',
+            '../images/act1/2093681304217183.jpg',
+            '../images/act1/2104824569769523.jpg',
+            '../images/act1/2104824696436177.jpg',
+            '../images/act1/2104824753102838.jpg',
+            '../images/act1/2104824973102816.jpg',
+            '../images/act1/2104825149769465.jpg',
+            '../images/act1/2104825673102746.jpg',
+            '../images/act1/2104825829769397.jpg',
+            '../images/act1/2104825989769381.jpg',
+            '../images/act1/2192393461012633.jpg',
+            '../images/act1/22919913db4d2507eaa2bc5667ea734d.JPEG',
+            '../images/act1/2368801283371849.jpg',
+            '../images/act1/2454955448089765.jpg',
+            '../images/act1/2454955501423093.jpg',
+            '../images/act1/2454955648089745.jpg',
+            '../images/act1/2454955838089726.jpg',
+            '../images/act1/2454956188089691.jpg',
+            '../images/act1/304791771654479.jpg',
+            '../images/act1/305818968218426.jpg',
+            '../images/act1/305819061551750.jpg',
+            '../images/act1/305820324884957.jpg',
+            '../images/act1/305820871551569.jpg',
+            '../images/act1/305821001551556.jpg',
+            '../images/act1/305828234884166.jpg',
+            '../images/act1/3368d7cea56ef2c9329277eaaa6bd3d6.JPEG',
+            '../images/act1/443569844443337.jpg',
+            '../images/act1/443570067776648.jpg',
+            '../images/act1/443570224443299.jpg',
+            '../images/act1/443570931109895.jpg',
+            '../images/act1/443571394443182.jpg',
+            '../images/act1/443571901109798.jpg',
+            '../images/act1/443572237776431.jpg',
+            '../images/act1/443572507776404.jpg',
+            '../images/act1/443573011109687.jpg',
+            '../images/act1/457703166363338.jpg',
+            '../images/act1/457703233029998.jpg',
+            '../images/act1/457703293029992.jpg',
+            '../images/act1/457703463029975.jpg',
+            '../images/act1/457703576363297.jpg',
+            '../images/act1/457704123029909.jpg',
+            '../images/act1/457704269696561.jpg',
+            '../images/act1/457704619696526.jpg',
+            '../images/act1/457704669696521.jpg',
+            '../images/act1/457704986363156.jpg',
+            '../images/act1/457705299696458.jpg',
+            '../images/act1/457705466363108.jpg',
+            '../images/act1/457706199696368.jpg',
+            '../images/act1/457706649696323.jpg',
+            '../images/act1/457707023029619.jpg',
+            '../images/act1/457707406362914.jpg',
+            '../images/act1/903488468451470.jpg',
+            '../images/act1/973646241435692.jpg',
+            '../images/act1/DSCF5487.JPEG',
+            '../images/act1/DSCF5651.JPEG',
+            '../images/act1/DSCF5670.JPEG',
+            '../images/act1/DSCF5679.JPEG',
+            '../images/act1/DSCF5703.JPEG',
+            '../images/act1/DSCF5709.JPEG',
+            '../images/act1/DSCF5723.JPEG',
+            '../images/act1/DSCF5737.JPEG',
+            '../images/act1/DSCF5749.JPEG',
+            '../images/act1/DSCF5752.JPEG',
+            '../images/act1/IMG_4502.PNG',
+        ];
 
-    <footer class="site-footer">
-        <div class="footer-inner">
-            <span class="footer-logo">Screaming Marionette</span>
-            <p class="footer-contact">For bookings &amp; inquiries:
-                <a href="mailto:contact@screamingmarionette.com">contact@screamingmarionette.com</a>
-            </p>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 Screaming Marionette. All Rights Reserved.</p>
-        </div>
-    </footer>
+        // Act II: Band lineup photos in chronological order (earliest → current)
+        const act2Images = [
+            '../images/act2/1.jpg',
+            '../images/act2/2.jpg',
+            '../images/act2/3.jpg',
+            '../images/act2/4.jpg',
+            '../images/act2/5.JPG',
+        ];
 
-    <script src="../js/script.js"></script>
+        // Act III: Fan, friends & family — 10 Year Anniversary
+        const act3Images = [
+            '../images/10yearanni/IMG_1262.webp',
+            '../images/10yearanni/IMG_1263.webp',
+            '../images/10yearanni/IMG_1264.webp',
+            '../images/10yearanni/IMG_1265.webp',
+            '../images/10yearanni/IMG_1266.webp',
+            '../images/10yearanni/IMG_1267.webp',
+            '../images/10yearanni/IMG_1268.webp',
+            '../images/10yearanni/IMG_1269.webp',
+            '../images/10yearanni/IMG_1270.webp',
+            '../images/10yearanni/IMG_1271.webp',
+            '../images/10yearanni/IMG_1272.webp',
+            '../images/10yearanni/IMG_1273.webp',
+            '../images/10yearanni/IMG_1274.webp',
+            '../images/10yearanni/IMG_1275.webp',
+            '../images/10yearanni/IMG_1276.webp',
+            '../images/10yearanni/IMG_1277.webp',
+            '../images/10yearanni/IMG_1278.webp',
+            '../images/10yearanni/IMG_1279.webp',
+            '../images/10yearanni/IMG_1280.webp',
+            '../images/10yearanni/IMG_1281.webp',
+            '../images/10yearanni/IMG_1282.webp',
+            '../images/10yearanni/IMG_1283.webp',
+            '../images/10yearanni/IMG_1284.webp',
+            '../images/10yearanni/IMG_1285.webp',
+            '../images/10yearanni/IMG_1286.webp',
+            '../images/10yearanni/IMG_1287.webp',
+            '../images/10yearanni/IMG_1288.webp',
+            '../images/10yearanni/IMG_1289.webp',
+            '../images/10yearanni/IMG_1291.webp',
+            '../images/10yearanni/IMG_1292.webp',
+            '../images/10yearanni/IMG_1293.webp',
+            '../images/10yearanni/IMG_1294.webp',
+            '../images/10yearanni/IMG_1295.webp',
+            '../images/10yearanni/IMG_1297.webp',
+            '../images/10yearanni/IMG_1298.webp',
+            '../images/10yearanni/IMG_1300.webp',
+            '../images/10yearanni/IMG_1301.webp',
+            '../images/10yearanni/IMG_1302.webp',
+            '../images/10yearanni/IMG_1303.webp',
+            '../images/10yearanni/IMG_1304.webp',
+            '../images/10yearanni/IMG_1305.webp',
+            '../images/10yearanni/IMG_1306.webp',
+            '../images/10yearanni/IMG_1307.webp',
+            '../images/10yearanni/IMG_1308.webp',
+            '../images/10yearanni/IMG_1309.webp',
+            '../images/10yearanni/IMG_1310.webp',
+            '../images/10yearanni/IMG_1311.webp',
+            '../images/10yearanni/IMG_1312.webp',
+            '../images/10yearanni/IMG_1313.webp',
+            '../images/10yearanni/IMG_1314.webp',
+            '../images/10yearanni/IMG_1315.webp',
+            '../images/10yearanni/IMG_1316.webp',
+            '../images/10yearanni/IMG_1317.webp',
+            '../images/10yearanni/IMG_1318.webp',
+            '../images/10yearanni/IMG_1319.webp',
+            '../images/10yearanni/IMG_1320.webp',
+            '../images/10yearanni/IMG_1321.webp',
+            '../images/10yearanni/IMG_1322.webp',
+            '../images/10yearanni/IMG_1323.webp',
+            '../images/10yearanni/IMG_1324.webp',
+            '../images/10yearanni/IMG_1325.webp',
+            '../images/10yearanni/IMG_1326.webp',
+            '../images/10yearanni/IMG_1327.webp',
+            '../images/10yearanni/IMG_1328.webp',
+            '../images/10yearanni/IMG_1329.webp',
+            '../images/10yearanni/IMG_1330.webp',
+            '../images/10yearanni/IMG_1331.webp',
+            '../images/10yearanni/IMG_1332.webp',
+            '../images/10yearanni/IMG_1333.webp',
+            '../images/10yearanni/IMG_1334.webp',
+            '../images/10yearanni/IMG_1335.webp',
+            '../images/10yearanni/IMG_1336.webp',
+            '../images/10yearanni/IMG_1337.webp',
+            '../images/10yearanni/IMG_1338.webp',
+            '../images/10yearanni/IMG_1339.webp',
+            '../images/10yearanni/IMG_1340.webp',
+            '../images/10yearanni/IMG_1341.webp',
+            '../images/10yearanni/IMG_1342.webp',
+            '../images/10yearanni/IMG_1343.webp',
+            '../images/10yearanni/IMG_1344.webp',
+            '../images/10yearanni/IMG_1345.webp',
+            '../images/10yearanni/IMG_1346.webp',
+            '../images/10yearanni/IMG_1347.webp',
+            '../images/10yearanni/IMG_1348.webp',
+            '../images/10yearanni/IMG_1349.webp',
+            '../images/10yearanni/IMG_1350.webp',
+            '../images/10yearanni/IMG_1351.webp',
+            '../images/10yearanni/IMG_1352.webp',
+            '../images/10yearanni/IMG_1353.webp',
+            '../images/10yearanni/IMG_1354.webp',
+            '../images/10yearanni/IMG_1355.webp',
+            '../images/10yearanni/IMG_1356.webp',
+            '../images/10yearanni/IMG_1357.webp',
+            '../images/10yearanni/IMG_1358.webp',
+            '../images/10yearanni/IMG_1359.webp',
+            '../images/10yearanni/IMG_1360.webp',
+            '../images/10yearanni/IMG_1361.webp',
+            '../images/10yearanni/IMG_1362.webp',
+            '../images/10yearanni/IMG_1363.webp',
+            '../images/10yearanni/IMG_1364.webp',
+            '../images/10yearanni/IMG_1365.webp',
+            '../images/10yearanni/IMG_1366.webp',
+            '../images/10yearanni/IMG_1367.webp',
+            '../images/10yearanni/IMG_2265.webp',
+            '../images/10yearanni/IMG_2269.webp',
+            '../images/10yearanni/IMG_2270.webp',
+            '../images/10yearanni/jme.jpg',
+            '../images/10yearanni/jmg.jpg',
+            '../images/10yearanni/jmh.jpg',
+            '../images/10yearanni/jmi.jpg',
+            '../images/10yearanni/jmj.jpg',
+            '../images/10yearanni/jml.jpg',
+            '../images/10yearanni/jmn.jpg',
+            '../images/10yearanni/jmo.jpg',
+            '../images/10yearanni/jmq.jpg',
+            '../images/10yearanni/jmr.jpg',
+            '../images/10yearanni/jmt.jpg',
+            '../images/10yearanni/jna.jpg',
+            '../images/10yearanni/jnb.jpg',
+            '../images/10yearanni/kaa.jpg',
+            '../images/10yearanni/kab.jpg',
+        ];
+
+        // ── ELEMENTS ─────────────────────────────────────────────────────────
+        const startScreen   = document.getElementById('startScreen');
+        const filmContainer = document.getElementById('filmContainer');
+        const photoDisplay  = document.getElementById('photoDisplay');
+        const textDisplay   = document.getElementById('textDisplay');
+        const flash         = document.getElementById('flash');
+        const scratch       = document.getElementById('scratch');
+        const grainCanvas   = document.getElementById('grainCanvas');
+        const endScreen     = document.getElementById('endScreen');
+        const startBtn      = document.getElementById('startBtn');
+        const skipBtn       = document.getElementById('skipBtn');
+
+        // ── GRAIN ────────────────────────────────────────────────────────────
+        const grainCtx = grainCanvas.getContext('2d');
+        let grainTick = 0;
+        let grainRunning = false;
+
+        function animateGrain() {
+            if (!grainRunning) return;
+            grainTick++;
+            if (grainTick % 3 === 0) {
+                const imageData = grainCtx.createImageData(256, 256);
+                const d = imageData.data;
+                for (let i = 0; i < d.length; i += 4) {
+                    const v = Math.random() * 255 | 0;
+                    d[i] = v; d[i+1] = v; d[i+2] = v; d[i+3] = 28;
+                }
+                grainCtx.putImageData(imageData, 0, 0);
+            }
+            requestAnimationFrame(animateGrain);
+        }
+
+        // ── FLASH ────────────────────────────────────────────────────────────
+        function triggerFlash() {
+            flash.classList.remove('pop');
+            void flash.offsetWidth;
+            flash.classList.add('pop');
+        }
+
+        // ── SCRATCH ──────────────────────────────────────────────────────────
+        function maybeScratch() {
+            if (Math.random() > 0.82) {
+                scratch.style.left = (Math.random() * 98) + 'vw';
+                scratch.style.display = 'block';
+                setTimeout(() => { scratch.style.display = 'none'; }, 60 + Math.random() * 100);
+            }
+        }
+
+        // ── HELPERS ──────────────────────────────────────────────────────────
+        function showPhoto(src) {
+            textDisplay.innerHTML = '';
+            photoDisplay.src = src;
+            photoDisplay.style.display = 'block';
+        }
+
+        function showText(text, cls) {
+            photoDisplay.style.display = 'none';
+            photoDisplay.src = '';
+            textDisplay.innerHTML = `<span class="${cls}">${text}</span>`;
+        }
+
+        function clearAll() {
+            photoDisplay.style.display = 'none';
+            photoDisplay.src = '';
+            textDisplay.innerHTML = '';
+        }
+
+        // ── ACTS ─────────────────────────────────────────────────────────────
+        async function act1() {
+            if (!act1Images.length) return;
+            const reversed = [...act1Images].reverse();
+            for (let i = 0; i < reversed.length; i++) {
+                showPhoto(reversed[i]);
+                maybeScratch();
+                if ((i + 1) % 12 === 0) triggerFlash();
+                await wait(80);
+            }
+            clearAll();
+            await wait(400);
+        }
+
+        async function act2() {
+            await wait(1200);
+            showText('HOW IT BEGAN', 'text-zoom');
+            await wait(6500);
+            clearAll();
+            await wait(300);
+            if (!act2Images.length) return;
+            const beforeCurrent = act2Images.slice(0, act2Images.length - 1);
+            const current = act2Images[act2Images.length - 1];
+            for (let i = 0; i < beforeCurrent.length; i++) {
+                triggerFlash();
+                await wait(120);
+                showPhoto(beforeCurrent[i]);
+                maybeScratch();
+                await wait(3500);
+            }
+            clearAll();
+            await wait(300);
+            showText('HOW IT\'S GOING', 'text-zoom');
+            await wait(6500);
+            clearAll();
+            await wait(300);
+            triggerFlash();
+            await wait(120);
+            showPhoto(current);
+            maybeScratch();
+            await wait(3500);
+            clearAll();
+            await wait(400);
+        }
+
+        async function act3() {
+            showText('none of this would be possible without you', 'text-lift');
+            await wait(3200);
+            clearAll();
+            await wait(300);
+            for (let i = 0; i < act3Images.length; i++) {
+                showPhoto(act3Images[i]);
+                maybeScratch();
+                if ((i + 1) % 5 === 0) triggerFlash();
+                await wait(600);
+            }
+            clearAll();
+            await wait(600);
+        }
+
+        async function act4() {
+            const cards = [
+                'thank you.',
+                'you stood in the pit. you took the hit.',
+                'we carry you with us.'
+            ];
+            photoDisplay.src = '../images/act4/_84A3898.JPG';
+            photoDisplay.style.filter = 'sepia(0.15) contrast(1.05) brightness(0.97) saturate(0.92)';
+            photoDisplay.style.display = 'block';
+            for (const text of cards) {
+                textDisplay.innerHTML = `<span class="text-card">${text}</span>`;
+                await wait(4500);
+                textDisplay.innerHTML = '';
+                await wait(600);
+            }
+            photoDisplay.style.filter = '';
+            clearAll();
+        }
+
+        // ── MAIN ─────────────────────────────────────────────────────────────
+        let skipped = false;
+        let paused = false;
+        let pauseResolve = null;
+        const pauseIndicator = document.getElementById('pauseIndicator');
+        const playAgainBtn = document.getElementById('playAgainBtn');
+        const muteBtn = document.getElementById('muteBtn');
+        const backBtn = document.getElementById('backBtn');
+        const bgAudio = document.getElementById('bgAudio');
+        const touchHint = document.getElementById('touchHint');
+        const isTouchDevice = () => window.matchMedia('(hover: none)').matches;
+
+        // ── AUDIO ────────────────────────────────────────────────────────────
+        muteBtn.addEventListener('click', () => {
+            bgAudio.muted = !bgAudio.muted;
+            muteBtn.textContent = bgAudio.muted ? 'Unmute' : 'Mute';
+        });
+
+        function fadeOutAudio(duration) {
+            if (bgAudio.paused) return;
+            const step = bgAudio.volume / (duration / 100);
+            const fade = setInterval(() => {
+                if (bgAudio.volume > step) {
+                    bgAudio.volume = Math.max(0, bgAudio.volume - step);
+                } else {
+                    bgAudio.volume = 0;
+                    bgAudio.pause();
+                    clearInterval(fade);
+                }
+            }, 100);
+        }
+
+        bgAudio.addEventListener('timeupdate', () => {
+            if (!bgAudio.duration) return;
+            const remaining = bgAudio.duration - bgAudio.currentTime;
+            if (remaining <= 4 && bgAudio.volume > 0) {
+                fadeOutAudio(remaining * 1000);
+            }
+        });
+
+        function wait(ms) {
+            return new Promise(resolve => {
+                const start = Date.now();
+                function tick() {
+                    if (skipped) { resolve(); return; }
+                    if (paused) { pauseResolve = resolve; return; }
+                    const elapsed = Date.now() - start;
+                    if (elapsed >= ms) { resolve(); }
+                    else { setTimeout(tick, Math.min(16, ms - elapsed)); }
+                }
+                tick();
+            });
+        }
+
+        function togglePause() {
+            paused = !paused;
+            pauseIndicator.style.display = paused ? 'block' : 'none';
+            backBtn.style.display = paused ? 'block' : 'none';
+            if (isTouchDevice()) touchHint.style.display = paused ? 'none' : 'block';
+            if (paused) {
+                bgAudio.pause();
+            } else {
+                bgAudio.play().catch(() => {});
+                if (pauseResolve) {
+                    const res = pauseResolve;
+                    pauseResolve = null;
+                    res();
+                }
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code !== 'Space') return;
+            if (filmContainer.style.display !== 'block') return;
+            e.preventDefault();
+            togglePause();
+        });
+
+        filmContainer.addEventListener('touchend', (e) => {
+            if (filmContainer.style.display !== 'block') return;
+            // ignore taps on buttons
+            if (e.target.closest('button, a')) return;
+            e.preventDefault();
+            togglePause();
+        }, { passive: false });
+
+        skipBtn.addEventListener('click', () => {
+            skipped = true;
+            paused = false;
+            grainRunning = false;
+            bgAudio.pause();
+            bgAudio.currentTime = 0;
+            filmContainer.style.display = 'none';
+            skipBtn.style.display = 'none';
+            muteBtn.style.display = 'none';
+            backBtn.style.display = 'none';
+            pauseIndicator.style.display = 'none';
+            touchHint.style.display = 'none';
+            endScreen.style.display = 'flex';
+        });
+
+        async function runFilm() {
+            skipped = false;
+            paused = false;
+            endScreen.style.display = 'none';
+            startScreen.style.display = 'none';
+            filmContainer.style.display = 'block';
+            skipBtn.style.display = 'block';
+            muteBtn.style.display = 'block';
+            backBtn.style.display = 'none';
+            touchHint.style.display = isTouchDevice() ? 'block' : 'none';
+            grainRunning = true;
+            animateGrain();
+            bgAudio.volume = 1;
+            bgAudio.currentTime = 0;
+            bgAudio.play().catch(() => {});
+
+            await act1();
+            if (skipped) return;
+            await act2();
+            if (skipped) return;
+            await act3();
+            if (skipped) return;
+            await act4();
+
+            if (!skipped) {
+                grainRunning = false;
+                bgAudio.pause();
+                bgAudio.currentTime = 0;
+                filmContainer.style.display = 'none';
+                skipBtn.style.display = 'none';
+                muteBtn.style.display = 'none';
+                backBtn.style.display = 'none';
+                touchHint.style.display = 'none';
+                endScreen.style.display = 'flex';
+            }
+        }
+
+        startBtn.addEventListener('click', runFilm);
+        playAgainBtn.addEventListener('click', runFilm);
+    </script>
 </body>
 
 </html>
