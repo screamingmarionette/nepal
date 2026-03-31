@@ -55,17 +55,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  /* WATCH BUTTON */
-
-
-  var watchNow = document.getElementById("watchNow");
-
-
-  if (watchNow) {
-    watchNow.addEventListener("click", function () {
-      window.open("https://www.youtube.com/c/ScreamingMarionette", "_blank");
-    });
-  }
 
 
 
